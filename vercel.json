@@ -1,22 +1,22 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist/client"
-      }
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist/client",
+  "installCommand": "npm install",
+  "framework": null,
+  "functions": {
+    "api/contact.js": {
+      "runtime": "nodejs18.x"
     }
-  ],
-  "routes": [
+  },
+  "rewrites": [
     {
-      "src": "/api/contact",
-      "dest": "/api/contact.js"
+      "source": "/api/contact",
+      "destination": "/api/contact"
     },
     {
-      "src": "/(.*)",
-      "dest": "/dist/client/$1"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }

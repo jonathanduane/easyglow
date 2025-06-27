@@ -1,5 +1,16 @@
-import { storage } from '../server/storage.js';
-import { insertContactSchema } from '../shared/schema.js';
+// Simple in-memory storage for Vercel deployment
+const contacts = [];
+
+// Basic validation schema
+const validateContact = (data) => {
+  if (!data.name || !data.email || !data.message) {
+    throw new Error('Name, email, and message are required');
+  }
+  if (!data.email.includes('@')) {
+    throw new Error('Invalid email format');
+  }
+  return true;
+};
 
 export default async function handler(req, res) {
   // Enable CORS
@@ -18,17 +29,24 @@ export default async function handler(req, res) {
 
   if (req.method === 'POST') {
     try {
-      const validatedData = insertContactSchema.parse(req.body);
-      const submission = await storage.createContactSubmission(validatedData);
+      validateContact(req.body);
+      const submission = {
+        id: contacts.length + 1,
+        name: req.body.name,
+        email: req.body.email,
+        phone: req.body.phone || '',
+        message: req.body.message,
+        createdAt: new Date().toISOString()
+      };
+      contacts.push(submission);
       res.status(201).json(submission);
     } catch (error) {
       console.error('Contact submission error:', error);
-      res.status(400).json({ error: 'Invalid contact data' });
+      res.status(400).json({ error: error.message || 'Invalid contact data' });
     }
   } else if (req.method === 'GET') {
     try {
-      const submissions = await storage.getAllContactSubmissions();
-      res.status(200).json(submissions);
+      res.status(200).json(contacts);
     } catch (error) {
       console.error('Contact retrieval error:', error);
       res.status(500).json({ error: 'Failed to retrieve contacts' });
