@@ -1,22 +1,4 @@
 {
-  "version": 2,
   "buildCommand": "npm run build",
-  "outputDirectory": "dist/client",
-  "installCommand": "npm install",
-  "framework": null,
-  "functions": {
-    "api/contact.js": {
-      "runtime": "nodejs18.x"
-    }
-  },
-  "rewrites": [
-    {
-      "source": "/api/contact",
-      "destination": "/api/contact"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
-  ]
+  "outputDirectory": "dist/client"
 }

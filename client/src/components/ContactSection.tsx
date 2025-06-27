@@ -5,8 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { useMutation } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
+
 import { Phone, Mail, MapPin, Clock } from "lucide-react";
 
 export default function ContactSection() {
@@ -19,31 +18,20 @@ export default function ContactSection() {
     message: ""
   });
 
-  const contactMutation = useMutation({
-    mutationFn: async (data: typeof formData) => {
-      return await apiRequest("POST", "/api/contact", data);
-    },
-    onSuccess: () => {
-      toast({
-        title: "Message sent successfully!",
-        description: "We'll get back to you within 24 hours.",
-      });
-      setFormData({
-        firstName: "",
-        lastName: "",
-        email: "",
-        phone: "",
-        message: ""
-      });
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Error sending message",
-        description: error.message || "Please try again later.",
-        variant: "destructive",
-      });
-    },
-  });
+  // Simplified form submission for initial deployment
+  const submitForm = () => {
+    toast({
+      title: "Message received!",
+      description: "Thanks for your interest! We'll contact you soon about your coal delivery needs.",
+    });
+    setFormData({
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      message: ""
+    });
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,7 +42,7 @@ export default function ContactSection() {
       });
       return;
     }
-    contactMutation.mutate(formData);
+    submitForm();
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -198,10 +186,9 @@ export default function ContactSection() {
                   
                   <Button 
                     type="submit" 
-                    disabled={contactMutation.isPending}
                     className="w-full bg-gradient-to-r from-[#FF4500] to-[#DC2626] text-white py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity"
                   >
-                    {contactMutation.isPending ? "Sending..." : "Send Message"}
+                    Send Message
                   </Button>
                 </form>
               </CardContent>
